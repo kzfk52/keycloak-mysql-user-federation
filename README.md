@@ -6,7 +6,7 @@
 
 Clone the repository:
 
-`git clone https://github.com/kyrcha/keycloak-mysql-user-federation.git`
+`git clone https://github.com/kzfk52/keycloak-mysql-user-federation.git`
 
 Build the fat jar:
 
@@ -22,7 +22,7 @@ Have a Keycloak running server. I am using docker here:
 
 Copy the jar file inside the standalone folder (was using windows when I wrote this :) ):
 
-`docker cp build\libs\keycloak-mysql-user-federation-all.jar keycloak_sso:/opt/jboss/keycloak/standalone/deployments/keycloak-mysql-user-federation.jar`
+`docker cp build/libs/keycloak-mysql-user-federation-all.jar keycloak_sso:/opt/jboss/keycloak/standalone/deployments/keycloak-mysql-user-federation.jar`
 
 Keycloak should load the jar:
 
