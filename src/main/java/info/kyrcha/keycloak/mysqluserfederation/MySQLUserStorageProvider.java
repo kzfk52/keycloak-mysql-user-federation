@@ -18,7 +18,7 @@ package info.kyrcha.keycloak.mysqluserfederation;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.Set;
 
@@ -55,15 +55,18 @@ public class MySQLUserStorageProvider
 
     @Override
     public UserModel getUserByUsername(String username, RealmModel realm) {
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
         UserModel adapter = null;
+        String sql = "";
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT " + this.config.getConfig().getFirst("usernamecol") + ", "
-                    + this.config.getConfig().getFirst("passwordcol") + " FROM "
-                    + this.config.getConfig().getFirst("table") + " WHERE "
-                    + this.config.getConfig().getFirst("usernamecol") + "=" + username + ";");
+            sql = "SELECT `" + this.config.getConfig().getFirst("usernamecol") + "`, `"
+                    + this.config.getConfig().getFirst("passwordcol") + "` FROM `"
+                    + this.config.getConfig().getFirst("table") + "` WHERE `"
+                    + this.config.getConfig().getFirst("usernamecol") + "` = ? ;";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,username);
+            rs = stmt.executeQuery();
             String pword = null;
             if (rs.next()) {
                 pword = rs.getString(this.config.getConfig().getFirst("passwordcol"));
@@ -74,6 +77,7 @@ public class MySQLUserStorageProvider
             // Now do something with the ResultSet ....
         } catch (SQLException ex) {
             // handle any errors
+            // System.out.println("SQL: " + sql);
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
@@ -128,14 +132,17 @@ public class MySQLUserStorageProvider
     @Override
     public boolean isConfiguredFor(RealmModel realm, UserModel user, String credentialType) {
         String password = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
+        String sql = "";
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT " + this.config.getConfig().getFirst("usernamecol") + ", "
-                    + this.config.getConfig().getFirst("passwordcol") + " FROM "
-                    + this.config.getConfig().getFirst("table") + " WHERE "
-                    + this.config.getConfig().getFirst("usernamecol") + "=" + user.getUsername() + ";");
+            sql = "SELECT `" + this.config.getConfig().getFirst("usernamecol") + "`, `"
+                    + this.config.getConfig().getFirst("passwordcol") + "` FROM `"
+                    + this.config.getConfig().getFirst("table") + "` WHERE `"
+                    + this.config.getConfig().getFirst("usernamecol") + "` = ? ;";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,user.getUsername());
+            rs = stmt.executeQuery();
             if (rs.next()) {
                 password = rs.getString(this.config.getConfig().getFirst("passwordcol"));
             }
@@ -182,14 +189,17 @@ public class MySQLUserStorageProvider
         if (!supportsCredentialType(input.getType()))
             return false;
         String password = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
+        String sql = "";
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT " + this.config.getConfig().getFirst("usernamecol") + ", "
-                    + this.config.getConfig().getFirst("passwordcol") + " FROM "
-                    + this.config.getConfig().getFirst("table") + " WHERE "
-                    + this.config.getConfig().getFirst("usernamecol") + "=" + user.getUsername() + ";");
+            sql = "SELECT `" + this.config.getConfig().getFirst("usernamecol") + "`, `"
+                    + this.config.getConfig().getFirst("passwordcol") + "` FROM `"
+                    + this.config.getConfig().getFirst("table") + "` WHERE `"
+                    + this.config.getConfig().getFirst("usernamecol") + "` = ? ;";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1,user.getUsername());
+            rs = stmt.executeQuery();
             if (rs.next()) {
                 password = rs.getString(this.config.getConfig().getFirst("passwordcol"));
             }
