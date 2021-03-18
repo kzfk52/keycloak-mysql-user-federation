@@ -4,6 +4,17 @@
 
 ## Installation
 
+Java environment Install for Ubuntu:
+
+```bash
+# JDK install
+sudo apt-get install default-jdk
+
+# Gradle install
+sudo add-apt-repository ppa:cwchien/gradle
+sudo apt-get install gradle
+```
+
 Clone the repository:
 
 `git clone https://github.com/kzfk52/keycloak-mysql-user-federation.git`
